@@ -1,8 +1,4 @@
-import {
-  asyncHandler,
-  errorHandler,
-  notFoundHandler,
-} from "@routes/serverHandlers";
+import { asyncHandler, errorHandler, notFoundHandler } from "@routes/serverHandlers";
 import express, { Request, Response } from "express";
 import request from "supertest";
 
@@ -30,15 +26,7 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 describe("Server Handlers", () => {
-  let logSpy: jest.SpyInstance;
-
-  beforeAll(() => {
-    logSpy = jest.spyOn(console, "error").mockImplementation(() => {});
-  });
-
-  afterAll(() => {
-    logSpy.mockRestore();
-  });
+  console.error = jest.fn();
 
   it("notFoundHandler: should respond with 404 JSON error", async () => {
     const response = await request(app).get("/non-existent-route");
