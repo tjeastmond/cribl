@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import { searchBy } from "./search";
 
 async function readPromise(
   filePath: string,
@@ -13,10 +14,6 @@ async function readPromise(
   } finally {
     await handle.close();
   }
-}
-
-function checkString(line: string, keywords: string[]) {
-  return keywords.some((keyword) => line.toLowerCase().includes(keyword.toLowerCase()));
 }
 
 async function readFileReverse(filePath: string) {
@@ -55,7 +52,7 @@ async function readFileReverse(filePath: string) {
   return { read, done };
 }
 
-async function readLogFile(filePath: string, needs: number = 10, keywords: string[] = []) {
+export async function readLogFile(filePath: string, needs: number = 10, keywrods: string[] = []) {
   let reader = await readFileReverse(filePath);
   const count = Math.max(needs, 1);
   const rows: string[] = [];
@@ -63,27 +60,10 @@ async function readLogFile(filePath: string, needs: number = 10, keywords: strin
   while (!reader.done() && rows.length < count) {
     let content = await reader.read();
     if (content) {
-      const lines = content.split("\n");
-
-      for (let i = lines.length - 1; i >= 0; --i) {
-        if (rows.length >= count) break;
-
-        const hasKeywords = keywords.length && checkString(lines[i], keywords);
-
-        if (!keywords.length || hasKeywords) {
-          rows.push(lines[i]);
-        }
-      }
+      const found = searchBy(content, count - rows.length, keywrods);
+      rows.push(...found);
     }
   }
 
   return rows;
 }
-
-async function test() {
-  // const r = await readLogFile("test_data/10_apache.log", 100);
-  const r = await readLogFile("test_data/10_apache.log", 100, ["OS X"]);
-  console.log(r, r.length);
-}
-
-test();
