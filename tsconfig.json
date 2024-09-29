@@ -21,7 +21,9 @@
       "@routes/*": ["./src/routes/*"],
       "@services/*": ["./src/services/*"],
       "@controllers/*": ["./src/controllers/*"],
-      "@middleware/*": ["./src/middleware/*"]
+      "@middleware/*": ["./src/middleware/*"],
+
+      "@reader/*": ["./src/reader/*"]
     }
   }
 }
