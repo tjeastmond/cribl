@@ -12,16 +12,35 @@ export interface LogRecord {
   userAgent: string;
 }
 
+/**
+ * Checks if a given log line matches the Apache log format.
+ *
+ * @param line - A single log line in string format.
+ * @returns True if the log line matches the Apache log format, otherwise false.
+ */
 export function isApacheLog(line: string): boolean {
   const apacheLogRegex = /^(\S+)\s(\S+)\s(\S+)\s(.+)\s(".+")\s(\d{3})\s(\d+)$/gi;
   return apacheLogRegex.test(line);
 }
 
+/**
+ * Checks if a given log line matches the Combined Apache log format.
+ *
+ * @param line - A single log line in string format.
+ * @returns True if the log line matches the Combined Apache log format, otherwise false.
+ */
 export function isCombinedApacheLog(line: string): boolean {
   const combinedRegex = /^(\S+)\s(\S+)\s(\S+)\s(\[\S+.+])\s(".+")\s(\d{3})\s(\d+)\s(\S+)\s"(.+?)"$/;
   return combinedRegex.test(line);
 }
 
+/**
+ * Parses a single Apache log line into a structured LogRecord object.
+ * If the log line does not match the Combined Apache log format, it will be returned as a string.
+ *
+ * @param {string} logLine - A single log line in string format.
+ * @returns {LogRecord | string} A LogRecord object or the original log line as a string.
+ */
 export function parseApacheLogLine(logLine: string): LogRecord | string {
   if (!isCombinedApacheLog(logLine)) return logLine;
 
@@ -52,10 +71,24 @@ export function parseApacheLogLine(logLine: string): LogRecord | string {
   };
 }
 
-export function parseLogLines(logLines: string[]): Array<LogRecord | string> {
+/**
+ * Parses an array of Apache log lines into structured LogRecord objects.
+ * If a log line does not match the Combined Apache log format, it will be returned as a string.
+ *
+ * @param {string[]} logLines - An array of log lines in string format.
+ * @returns {Array<LogRecord | string>} An array of LogRecord or the original log lines as strings.
+ */
+export function parseApacheLogLines(logLines: string[]): Array<LogRecord | string> {
   return logLines.map(parseApacheLogLine);
 }
 
-export function parseLog(logLines: string[]): Array<LogRecord | string> {
-  return parseLogLines(logLines);
+/**
+ * Parses an array of log lines into structured LogRecord objects.
+ * If a log line does not match the Apache log format, it will be returned as a string.
+ *
+ * @param logLines - An array of log lines in string format.
+ * @returns An array of LogRecord objects or the original log lines as strings.
+ */
+export function parseApacheLog(logLines: string[]): Array<LogRecord | string> {
+  return parseApacheLogLines(logLines);
 }

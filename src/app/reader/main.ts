@@ -1,6 +1,7 @@
-import * as fs from "fs";
-import { searchBy } from "@reader/search";
 import { parse } from "@reader/parsers/parse";
+import { searchBy } from "@reader/search";
+import * as fs from "fs";
+import path from "path";
 
 /**
  * Reads data from a file and writes it to a buffer at a specified offset.
@@ -10,7 +11,7 @@ import { parse } from "@reader/parsers/parse";
  * @param {number} [offSet=0] - The offset in the buffer at which to start writing.
  * @param {number|null} readSize - The number of bytes to read from the file.
  * @param {number|null} position - The position in the file from which to start reading.
- * @returns {Promise<void>} A promise that resolves when the read operation is complete.
+ * @returns {Promise<void>}
  */
 async function readPromise(
   filePath: string,
@@ -28,14 +29,11 @@ async function readPromise(
 }
 
 /**
- * Reads a file in reverse order, returning chunks of data until the
- * beginning of the file is reached. The text is returned in chunks and waits for the next
- * read to be called before reading the next chunk.
+ * Reads a file in reverse order, returning chunks of data. To read the data, call the `read`
+ * function to get the first chunk of data and so on until the `done` function returns true.
  *
  * @param {string} filePath - The path to the file to read from.
- * @returns {Promise<{ read: function, done: function }>} An object containing the
- *          read function to retrieve the next chunk of data and
- *          a done function to check if the end of the file has been reached.
+ * @returns {Promise<{ read: function, done: function }>}
  */
 async function readFileReverse(filePath: string): Promise<{ read: Function; done: Function }> {
   const stats = await fs.promises.stat(filePath);
@@ -73,20 +71,30 @@ async function readFileReverse(filePath: string): Promise<{ read: Function; done
   return { read, done };
 }
 
+export async function fileExists(filePath: string) {
+  try {
+    await fs.promises.access(filePath, fs.constants.R_OK);
+    return true;
+  } catch (error) {
+    throw new Error(`File not found: ${path.basename(filePath)}`);
+  }
+}
+
 /**
  * Reads a log file in reverse order, retrieving a specified number of lines
- * that match given keywords.
+ * and matching any keywords.
  *
  * @param {string} filePath - The path to the log file to read from.
  * @param {number} [needs=100] - The maximum number of lines to retrieve from the log file.
- * @param {string[]} [keywrods=[]] - An array of keywords to search for in the log file content.
+ * @param {string[]} [keywords=[]] - An array of keywords to search for in the log file content.
  * @returns {Promise<Array<object | string>>} A promise that resolves to an array of matched log entries.
  */
 export async function readLogFile(
   filePath: string,
   needs: number = 100,
-  keywrods: string[] = [],
+  keywords: string[] = [],
 ): Promise<Array<object | string>> {
+  await fileExists(filePath);
   const reader = await readFileReverse(filePath);
   const count = Math.max(needs, 1);
   const rows: Array<object | string> = [];
@@ -95,7 +103,7 @@ export async function readLogFile(
     let content = await reader.read();
 
     if (content) {
-      const found = searchBy(content, count - rows.length, keywrods);
+      const found = searchBy(content, count - rows.length, keywords);
       rows.push(...parse(found));
     }
   }

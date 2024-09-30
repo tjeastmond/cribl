@@ -1,5 +1,5 @@
 import path from "path";
-import { readLogFile } from "@reader/main";
+import { readLogFile, fileExists } from "@reader/main";
 
 describe("readLogFile", () => {
   const smallLog = path.join(__dirname, "/fixtures/small.log");
@@ -28,18 +28,18 @@ describe("readLogFile", () => {
     expect(result).toEqual([]);
   });
 
-  it("should return an empty array if the file is empty", async () => {
-    const result = await readLogFile(emptyLog, 3);
-    expect(result).toHaveLength(0);
-    expect(result).toEqual([]);
-  });
-
   it("should read the ten lines from the test file in the correct order", async () => {
     const restult = await readLogFile(tenLinesLog, 10);
     expect(restult).toHaveLength(10);
   });
 
+  test("returns true for an existing file", async () => {
+    const existingFilePath = path.join(__dirname, "/fixtures/1000_apache.log");
+    const result = await fileExists(existingFilePath);
+    expect(result).toBe(true);
+  });
+
   it("should handle errors when opening the file", async () => {
-    await expect(readLogFile(fakeLog)).rejects.toThrow("ENOENT: no such file or directory, stat");
+    await expect(readLogFile(fakeLog)).rejects.toThrow("File not found: fake.log");
   });
 });

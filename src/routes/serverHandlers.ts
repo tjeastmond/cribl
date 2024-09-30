@@ -4,10 +4,9 @@ export function notFoundHandler(_: Request, res: Response, __: Next) {
   res.status(404).json({ error: "Not Found" });
 }
 
-// prettier-ignore
 export function errorHandler(err: Error, _: Request, res: Response, _next: Next) {
   console.error("LOG API ERROR: ", err.stack);
-  res.status(500).send(`Internal Server Error`);
+  res.status(400).json({ message: err.message });
 }
 
 /**

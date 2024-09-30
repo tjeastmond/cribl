@@ -3,7 +3,7 @@ import {
   isCombinedApacheLog,
   LogRecord,
   parseApacheLogLine,
-  parseLogLines,
+  parseApacheLogLines,
 } from "@reader/parsers/apache";
 
 describe("Log Parsing Functions", () => {
@@ -61,7 +61,7 @@ describe("Log Parsing Functions", () => {
     });
   });
 
-  describe("parseLogLines", () => {
+  describe("parseApacheLogLines", () => {
     it("should parse an array of log lines", () => {
       const logLines = [
         '127.0.0.1 - - [12/Mar/2023:14:00:00 +0000] "GET /index.html HTTP/1.1" 200 1024 "http://example.com" "Mozilla/5.0"',
@@ -85,7 +85,7 @@ describe("Log Parsing Functions", () => {
         "Invalid log line",
       ];
 
-      expect(parseLogLines(logLines)).toEqual(expected);
+      expect(parseApacheLogLines(logLines)).toEqual(expected);
     });
   });
 });
