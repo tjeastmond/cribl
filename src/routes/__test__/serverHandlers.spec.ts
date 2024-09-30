@@ -35,11 +35,11 @@ describe("Server Handlers", () => {
     expect(response.body).toEqual({ error: "Not Found" });
   });
 
-  it("errorHandler: should respond with 500 TEXT error", async () => {
+  it("errorHandler: should respond with 400 TEXT error", async () => {
     const response = await request(app).get("/throw");
-    expect(response.status).toBe(500);
+    expect(response.status).toBe(400);
     expect(response.headers["content-type"].match(/text/));
-    expect(response.text).toEqual("Internal Server Error");
+    expect(response.body).toEqual({ message: "This is an error!" });
   });
 });
 
@@ -52,6 +52,6 @@ describe("Async Handler", () => {
 
   it("should handle errors in async route", async () => {
     const response = await request(app).get("/test-async-error");
-    expect(response.status).toBe(500);
+    expect(response.status).toBe(400);
   });
 });
