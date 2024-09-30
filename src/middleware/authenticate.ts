@@ -4,9 +4,9 @@ import { NextFunction as Next, Request, Response } from "express";
 /**
  * Middleware function to authenticate API requests.
  *
- * @param req - The HTTP request object.
- * @param res - The HTTP response object.
- * @param next - The next middleware function in the request-response cycle.
+ * @param {Response} req - The HTTP request object.
+ * @param {Request} res - The HTTP response object.
+ * @param {Next} next - The next middleware function in the request-response cycle.
  */
 
 export default function authenticate(req: Request, res: Response, next: Next) {
