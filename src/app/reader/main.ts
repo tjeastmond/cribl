@@ -59,6 +59,7 @@ export async function readLogFile(filePath: string, needs: number = 10, keywrods
 
   while (!reader.done() && rows.length < count) {
     let content = await reader.read();
+
     if (content) {
       const found = searchBy(content, count - rows.length, keywrods);
       rows.push(...found);

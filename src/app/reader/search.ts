@@ -1,3 +1,6 @@
+type SearchByType = "array" | "text";
+const DEFAULT_SEARCHBY: SearchByType = "text";
+
 export function checkString(line: string, keywords: string[]): boolean {
   return keywords.some((keyword) => line.toLowerCase().includes(keyword.toLowerCase()));
 }
@@ -40,10 +43,12 @@ export function searchByArray(text: string, needed: number, keywords: string[] =
   return found;
 }
 
-type SearchByType = "array" | "text";
-export const SEARCHBY: SearchByType = "text";
-
-export function searchBy(text: string, needed: number, keywords: string[] = []): string[] {
-  const func = SEARCHBY === "array" ? searchByArray : searchByText;
+export function searchBy(
+  text: string,
+  needed: number,
+  keywords: string[] = [],
+  searchByValue: SearchByType = DEFAULT_SEARCHBY,
+): string[] {
+  const func = searchByValue === "array" ? searchByArray : searchByText;
   return func(text, needed, keywords);
 }
