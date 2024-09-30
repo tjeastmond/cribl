@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon --exec ts-node -r tsconfig-paths/register src/main.ts",
     "test": "jest",
-    "test:reader": "jest -- src/app/reader/__test__/reader.spec.ts",
+    "test:reader": "jest -- src/app/reader",
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
@@ -14,8 +14,6 @@
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
     "helmet": "^7.1.0",
-    "install": "^0.13.0",
-    "morgan": "^1.10.0",
     "npm": "^10.8.3"
   },
   "devDependencies": {
