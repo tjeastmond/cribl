@@ -11,8 +11,12 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "express": "^4.21.0",
-    "helmet": "^7.1.0"
+    "helmet": "^7.1.0",
+    "install": "^0.13.0",
+    "morgan": "^1.10.0",
+    "npm": "^10.8.3"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
