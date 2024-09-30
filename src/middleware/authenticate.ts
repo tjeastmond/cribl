@@ -8,7 +8,6 @@ import { NextFunction as Next, Request, Response } from "express";
  * @param {Request} res - The HTTP response object.
  * @param {Next} next - The next middleware function in the request-response cycle.
  */
-
 export default function authenticate(req: Request, res: Response, next: Next) {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
@@ -25,7 +24,3 @@ export default function authenticate(req: Request, res: Response, next: Next) {
 
   next();
 }
-
-// curl -H "Authorization: Bearer 935989e5-8293-4fef-9982-54167a2c85a7" http://localhost:3000/healthcheck
-// curl -H "Authorization: Bearer token123" http://localhost:3000/healthcheck
-// curl http://localhost:3000
