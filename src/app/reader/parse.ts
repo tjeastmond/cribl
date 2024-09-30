@@ -1,10 +1,5 @@
-import {
-  isApacheLog,
-  isCombinedApacheLog,
-  parseApacheLog,
-  parseApacheLogLines,
-} from "@reader/parsers/apache";
-import { isJSON, parseJSONArray } from "@reader/parsers/json";
+import { ApacheParser } from "@reader/parsers/apacheParser";
+import { JSONParser } from "@reader/parsers/jsonParser";
 
 /**
  * Parses an array of log lines and returns the parsed result based on the log format.
@@ -14,8 +9,12 @@ import { isJSON, parseJSONArray } from "@reader/parsers/json";
  */
 export function parse(logLines: string[]): Array<object | string> {
   if (!logLines.length) return [];
-  if (isJSON(logLines[0])) return parseJSONArray(logLines);
-  if (isApacheLog(logLines[0])) return parseApacheLogLines(logLines);
-  if (isCombinedApacheLog(logLines[0])) return parseApacheLog(logLines);
+
+  const jsonParser = new JSONParser(logLines);
+  const apacheParser = new ApacheParser(logLines);
+
+  if (jsonParser.checkFirst()) return jsonParser.parse();
+  if (apacheParser.checkFirst()) return apacheParser.parse();
+
   return logLines;
 }

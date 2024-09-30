@@ -1,4 +1,4 @@
-import { checkString, getLastLine, searchBy, searchByArray, searchByText } from "../search";
+import { checkString, getLastLine, searchBy, searchByArray, searchByText } from "@reader/search";
 
 describe("String Search Functions", () => {
   test("checkString should return true if any keyword is found", () => {

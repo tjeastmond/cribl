@@ -1,42 +1,38 @@
-import {
-  isApacheLog,
-  isCombinedApacheLog,
-  LogRecord,
-  parseApacheLogLine,
-  parseApacheLogLines,
-} from "@reader/parsers/apache";
+import { ApacheParser, LogRecord } from "@reader/parsers/apacheParser";
 
-describe("Log Parsing Functions", () => {
-  describe("isCombinedApacheLog", () => {
-    it("should return true for valid combined Apache log entry", () => {
-      // prettier-ignore
-      const logLine = '127.0.0.1 - - [12/Mar/2023:14:00:00 +0000] "GET /index.html HTTP/1.1" 200 1024 "http://example.com" "Mozilla/5.0"';
-      expect(isCombinedApacheLog(logLine)).toBe(true);
+describe("Apache Log Parsing", () => {
+  const combined = [
+    '127.0.0.1 - - [12/Mar/2023:14:00:00 +0000] "GET /index.html HTTP/1.1" 200 1024 "http://example.com" "Mozilla/5.0"',
+  ];
+
+  const standard = [
+    '127.0.0.1 - - [12/Mar/2023:14:00:00 +0000] "GET /index.html HTTP/1.1" 200 1024',
+  ];
+
+  let parser: ApacheParser;
+  let parser2: ApacheParser;
+
+  beforeEach(() => {
+    parser = new ApacheParser(combined);
+    parser2 = new ApacheParser(standard);
+  });
+
+  describe("isValid", () => {
+    it("should return true for valid Apache log entries", () => {
+      expect(parser.checkFirst()).toBe(true);
+      expect(parser2.checkFirst()).toBe(true);
     });
 
-    it("should return false for invalid log entry", () => {
+    it("should return false for an invalid log entry", () => {
       const logLine = "Invalid log line";
-      expect(isCombinedApacheLog(logLine)).toBe(false);
+      expect(parser.isValid(logLine)).toBe(false);
+      expect(parser2.isValid(logLine)).toBe(false);
     });
   });
 
-  describe("isApacheLog", () => {
-    it("should return true for valid Apache log entry", () => {
-      // prettier-ignore
-      const logLine = '127.0.0.1 - - [12/Mar/2023:14:00:00 +0000] "GET /index.html HTTP/1.1" 200 1024';
-      expect(isApacheLog(logLine)).toBe(true);
-    });
-
-    it("should return false for invalid log entry", () => {
-      const logLine = "Another invalid log line";
-      expect(isCombinedApacheLog(logLine)).toBe(false);
-    });
-  });
-
-  describe("parseApacheLogLine", () => {
+  describe("parse Apache Log Lines", () => {
     it("should parse valid combined Apache log entry", () => {
-      // prettier-ignore
-      const logLine = '127.0.0.1 - - [12/Mar/2023:14:00:00 +0000] "GET /index.html HTTP/1.1" 200 1024 "http://example.com" "Mozilla/5.0"';
+      const logLine = parser.buffer[0];
 
       const expected: LogRecord = {
         bytesSent: 1024,
@@ -52,12 +48,13 @@ describe("Log Parsing Functions", () => {
         userAgent: "Mozilla/5.0",
       };
 
-      expect(parseApacheLogLine(logLine)).toEqual(expected);
+      expect(parser.parseLine(logLine)).toEqual(expected);
     });
 
     it("should return the original line when not a combined Apache log", () => {
       const logLine = "Invalid log line";
-      expect(parseApacheLogLine(logLine)).toBe(logLine);
+      expect(parser.parseLine(logLine)).toBe(logLine);
+      expect(parser2.parseLine(logLine)).toBe(logLine);
     });
   });
 
@@ -67,6 +64,8 @@ describe("Log Parsing Functions", () => {
         '127.0.0.1 - - [12/Mar/2023:14:00:00 +0000] "GET /index.html HTTP/1.1" 200 1024 "http://example.com" "Mozilla/5.0"',
         "Invalid log line",
       ];
+
+      const parser3 = new ApacheParser(logLines);
 
       const expected = [
         {
@@ -85,7 +84,7 @@ describe("Log Parsing Functions", () => {
         "Invalid log line",
       ];
 
-      expect(parseApacheLogLines(logLines)).toEqual(expected);
+      expect(parser3.parse()).toEqual(expected);
     });
   });
 });

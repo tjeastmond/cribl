@@ -1,4 +1,4 @@
-import { parse } from "@reader/parsers/parse";
+import { parse } from "@reader/parse";
 import { searchBy } from "@reader/search";
 import * as fs from "fs";
 import path from "path";

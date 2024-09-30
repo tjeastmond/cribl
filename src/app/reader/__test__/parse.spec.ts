@@ -1,4 +1,4 @@
-import { parse } from "@reader/parsers/parse";
+import { parse } from "@reader/parse";
 
 describe("parse function", () => {
   it("should return an empty array when logLines is empty", () => {
