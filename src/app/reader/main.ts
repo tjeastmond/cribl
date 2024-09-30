@@ -8,9 +8,9 @@ import path from "path";
  *
  * @param {string} filePath - The path to the file to read from.
  * @param {Buffer} buffer - The buffer to write the data to.
- * @param {number} [offSet=0] - The offset in the buffer at which to start writing.
+ * @param {number} [offSet=0] - The offset in the buffer to start writing.
  * @param {number|null} readSize - The number of bytes to read from the file.
- * @param {number|null} position - The position in the file from which to start reading.
+ * @param {number|null} position - The position in the file to start reading.
  * @returns {Promise<void>}
  */
 async function readPromise(
