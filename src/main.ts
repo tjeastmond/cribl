@@ -1,6 +1,6 @@
 import express from "express";
 import router from "@routes/router";
-import middleware from "./middleware/connect";
+import middleware from "@middleware/connect";
 
 const app = express();
 const port = process.env.PORT || 3000;
