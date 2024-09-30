@@ -96,7 +96,7 @@ export async function readLogFile(
 ): Promise<Array<object | string>> {
   await fileExists(filePath);
   const reader = await readFileReverse(filePath);
-  const count = Math.max(needs, 1);
+  const count = needs || 100;
   const rows: Array<object | string> = [];
 
   while (!reader.done() && rows.length < count) {
