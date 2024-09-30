@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import { searchBy } from "@reader/search";
+import { parse } from "@reader/parsers/parse";
 
 /**
  * Reads data from a file and writes it to a buffer at a specified offset.
@@ -72,17 +73,30 @@ async function readFileReverse(filePath: string): Promise<{ read: Function; done
   return { read, done };
 }
 
-export async function readLogFile(filePath: string, needs: number = 10, keywrods: string[] = []) {
-  let reader = await readFileReverse(filePath);
+/**
+ * Reads a log file in reverse order, retrieving a specified number of lines
+ * that match given keywords.
+ *
+ * @param {string} filePath - The path to the log file to read from.
+ * @param {number} [needs=100] - The maximum number of lines to retrieve from the log file.
+ * @param {string[]} [keywrods=[]] - An array of keywords to search for in the log file content.
+ * @returns {Promise<Array<object | string>>} A promise that resolves to an array of matched log entries.
+ */
+export async function readLogFile(
+  filePath: string,
+  needs: number = 100,
+  keywrods: string[] = [],
+): Promise<Array<object | string>> {
+  const reader = await readFileReverse(filePath);
   const count = Math.max(needs, 1);
-  const rows: string[] = [];
+  const rows: Array<object | string> = [];
 
   while (!reader.done() && rows.length < count) {
     let content = await reader.read();
 
     if (content) {
       const found = searchBy(content, count - rows.length, keywrods);
-      rows.push(...found);
+      rows.push(...parse(found));
     }
   }
 
