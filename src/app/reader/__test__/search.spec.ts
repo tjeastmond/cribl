@@ -1,11 +1,4 @@
-import {
-  checkString,
-  getLastLine,
-  searchByText,
-  searchByArray,
-  searchBy,
-  SEARCHBY,
-} from "../search";
+import { checkString, getLastLine, searchBy, searchByArray, searchByText } from "../search";
 
 describe("String Search Functions", () => {
   test("checkString should return true if any keyword is found", () => {
@@ -41,24 +34,17 @@ describe("String Search Functions", () => {
     expect(result).toEqual(["First line"]);
   });
 
-  test('searchBy should call searchByText when SEARCHBY is "text"', () => {
+  test('searchBy should call searchByText when "searchByValue" is "text"', () => {
     const text = "First line\nSecond line\nFinal line";
     const keywords = ["final"];
     const result = searchBy(text, 1, keywords);
     expect(result).toEqual(["Final line"]);
   });
 
-  test('searchBy should call searchByArray when SEARCHBY is "array"', () => {
-    const originalSearchBy = SEARCHBY;
-    // Temporarily switch SEARCHBY to "array" to test
-    (global as any).SEARCHBY = "array";
-
+  test('searchBy should call searchByArray when "searchByValue" is "array"', () => {
     const text = "First line\nSecond line\nFinal line";
-    const keywords = ["first"];
-    const result = searchBy(text, 1, keywords);
-    expect(result).toEqual(["First line"]);
-
-    // Restore original SEARCHBY
-    (global as any).SEARCHBY = originalSearchBy;
+    const keywords = ["final"];
+    const result = searchBy(text, 100, keywords, "array");
+    expect(result).toEqual(["Final line"]);
   });
 });
