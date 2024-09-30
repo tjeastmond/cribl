@@ -1,4 +1,5 @@
 import {
+  isApacheLog,
   isCombinedApacheLog,
   LogRecord,
   parseApacheLogLine,
@@ -15,6 +16,19 @@ describe("Log Parsing Functions", () => {
 
     it("should return false for invalid log entry", () => {
       const logLine = "Invalid log line";
+      expect(isCombinedApacheLog(logLine)).toBe(false);
+    });
+  });
+
+  describe("isApacheLog", () => {
+    it("should return true for valid Apache log entry", () => {
+      // prettier-ignore
+      const logLine = '127.0.0.1 - - [12/Mar/2023:14:00:00 +0000] "GET /index.html HTTP/1.1" 200 1024';
+      expect(isApacheLog(logLine)).toBe(true);
+    });
+
+    it("should return false for invalid log entry", () => {
+      const logLine = "Another invalid log line";
       expect(isCombinedApacheLog(logLine)).toBe(false);
     });
   });

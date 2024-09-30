@@ -1,5 +1,5 @@
-import { isJSON, parseJSONArray } from "./json";
-import { isApacheLog, isCombinedApacheLog, parseLog, parseLogLines } from "./apache";
+import { isApacheLog, isCombinedApacheLog, parseLog, parseLogLines } from "@reader/parsers/apache";
+import { isJSON, parseJSONArray } from "@reader/parsers/json";
 
 export function parse(logLines: string[]) {
   if (!logLines.length) return [];
