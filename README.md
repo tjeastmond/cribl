@@ -1,5 +1,7 @@
 # Cribl API Project
 
+[![codecov](https://codecov.io/gh/tjeastmond/cribl/graph/badge.svg?token=19SODAW58R)](https://codecov.io/gh/tjeastmond/cribl)
+
 This project is an implementation of the Cribl team's API project. The goal of the project is to accept requests to an API that will then fetch the log data requested. This data is serverd in reverse chronological order, as JSON, and is paginated. The requestor can also filter the results and specify the number of results per page.
 
 ## Assumptions
