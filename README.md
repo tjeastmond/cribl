@@ -16,6 +16,11 @@ Starting with some simple notes about the project:
 - The code may be over documented! If you find it too verbose, please let me know.
 - Due to time constraints, I did not implement any of the bonus features. I would be happy to discuss how I would implement them if you would like. I may submit a PR with a bonus feature or two while you are reviewing.
 
+**What I Want to Add**
+
+- I was planning on implementing `gRPC` for the service to communicate with other servers hosting this service
+- I'm want to add paging, but I'd want to add caching as well to make it more efficient
+
 ## Technologies and Libraries
 
 While the primary logic of this project is written in `TypeScript` without the aid of any libraries, the server uses the following libraries:
@@ -31,29 +36,51 @@ And uses the following technologies across the project:
 - Node.js
 - Docker
 
+### Code Decisions
+
+**Log Reading**
+
+This project reads logs via file streams, and approaches pulling data from the files in two different ways.
+
+Both approaches only read in a chunk of data at a time and steps through the buffer backwards looking for lines that satisfy filtering and the requqired number of results needed. We seek backwards to ensure that the newest lines are returned first. The function running this process opperates like a generator function, yielding and waiting for the next chunk of data to be requested.
+
+My first solution with take the buffer and splits it on new lines and steps through them backwards looking for viable log lines. It filters and only returns the number of results requested. This solution is more memory intensive, but is more readable and easier to follow.
+
+The second solution that I kept in place is more memory efficient, but potentionally harder to follow. It leaves the buffer in tact, looks for the last new line character and then plucks out the last line from the buffer. Eventually the buffer will be empty and needs a new chunk of data, or not if we have all we need.
+
+I left a toggle in place to switch between both solutions if you are interested, and could be found in the `src/app/reader/search.ts` file.
+
+**Parsing Logs**
+
+I wanted to make sure that the logs get to the endpoint in a useable format. I wrote an abstract base class that both current parsers implement. The idea is to make it so additional parsers could be easily added and used in the future. I was also thinking the API caller could request a specific parser to be used, but I did not implement that feature yet.
+
+The parsers use simple logic to determine if they are the best solution for the log file. If no parser works, the log is returned as an array of log lines.
+
 ### Authentication
 
-I have implemented a simple authentication middleware that checks for a `Bearer` token in the `Authorization` header. If the token is not present or does not match, the service will return a `401` or `403` status code as appropriate.
+I have implemented a simple authentication middleware that checks for a `Bearer` token in the `Authorization` header. If the token is not present or does not match, the service will return a `401` or `403` respectively.
 
-All the sample `curl` calls with have a valid token in the `Authorization` header.
+All the example `curl` calls at the end of this README have a valid token in the `Authorization` header. You could find available tokens in the `src/config/validTokens.ts` file.
 
 ## Getting Started Locally
 
-To get started with this project, you will need to have `Node.js v20.17.0` installed on your machine. I suggest using `NVM` to install the proper version of `Node.js`. Once you have cloned this repository you can run the following command:
+To get started with this project, you will need to have `Node.js v20.17.0` installed on your machine. I suggest using `NVM` to install the proper version of `Node.js`. Once you have cloned this repository run the following command to get started:
 
 ```bash
 # Install the project dependencies
 npm install
 ```
 
-For local development, you need to edit the `.env` file to point to your `/var/log` direcotry or feel free to point it to the `/src/app/reader/__test__/fixtures` directory to use the test log files. Either way, I would suggest copying the test files to you log directory.
+For local development, there is an `npm` script that can copy the test log files to the `/var/log` directory. This is just a convient way to test the service locally. You don't need my logs!
+
+````bash
 
 Files in the `/var/log` directory are read and parsed by the service. To run the service, you can use the following command:
 
 ```bash
 # Start the service locally
 npm run dev
-```
+````
 
 ## Getting Started with Docker
 
@@ -76,11 +103,15 @@ This endpoint requires a `POST` request with a bearer token, and the following p
 
 ```json
 {
-  "file_name": "string", // required
-  "num_results": "number", // default 100
-  "keyword": ["string", "string"] // default []
+  "file_name": "string",
+  "num_results": "number",
+  "keywords": ["string", "string"]
 }
 ```
+
+- **file_name:** required, the name of the log file to read
+- **num_results:** optional, the number of results to return, defaults to 100
+- **keywords:** optional, an array of keywords to filter the results by, defaults to []
 
 Filtering the results by `keyword` is optional. If the `keyword` parameter is not provided, the service will return all the log lines up to the `num_results` limit. Filtering is also case insensitive, and matches any of the keywords provided (not strictly all).
 
@@ -114,9 +145,7 @@ curl -X POST 'http://localhost:3000/logs' \
   --header 'Content-Type: application/json' \
   --data-raw $'{ "file_name": "1000_apache.log" }' \
   --header 'Authorization: Bearer 935989e5-8293-4fef-9982-54167a2c85a7'
-```
 
-```bash
 # request without token (should return 401)
 curl -X POST 'http://localhost:3000/logs' \
   --header 'Content-Type: application/json' \
