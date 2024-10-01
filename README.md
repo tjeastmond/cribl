@@ -73,14 +73,12 @@ npm install
 
 For local development, there is an `npm` script that can copy the test log files to the `/var/log` directory. This is just a convient way to test the service locally. You don't need my logs!
 
-````bash
-
 Files in the `/var/log` directory are read and parsed by the service. To run the service, you can use the following command:
 
 ```bash
 # Start the service locally
 npm run dev
-````
+```
 
 ## Getting Started with Docker
 
