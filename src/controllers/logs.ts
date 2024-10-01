@@ -3,7 +3,7 @@ import { isNumber } from "@utils/check";
 import { Request, Response } from "express";
 
 function logsPath(fileName: string) {
-  return `${process.env.LOGS_DIR}${fileName}`;
+  return `/var/log/${fileName}`;
 }
 
 /**

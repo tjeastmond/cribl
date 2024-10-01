@@ -4,14 +4,15 @@
   "description": "",
   "author": "TJ Eastmond <tj.eastmond@gmail.com>",
   "scripts": {
+    "start": "npm run dev",
     "dev": "nodemon --exec ts-node -r tsconfig-paths/register src/main.ts",
+    "copy:logs": "sudo cp ./src/app/reader/__test__/fixtures/* /var/log",
     "test": "jest",
     "test:reader": "jest -- src/app/reader",
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
     "express": "^4.21.0",
     "helmet": "^7.1.0"
   },
