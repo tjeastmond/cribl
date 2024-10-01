@@ -29,8 +29,7 @@ async function readPromise(
 }
 
 /**
- * Reads a file in reverse order, returning chunks of data. To read the data, call the `read`
- * function to get the first chunk of data and so on until the `done` function returns true.
+ * Reads a document in reverse order, yielding after every chunk of data.
  *
  * @param {string} filePath - The path to the file to read from.
  * @returns {Promise<{ read: function, done: function }>}
@@ -87,7 +86,7 @@ export async function fileExists(filePath: string) {
  * @param {string} filePath - The path to the log file to read from.
  * @param {number} [needs=100] - The maximum number of lines to retrieve from the log file.
  * @param {string[]} [keywords=[]] - An array of keywords to search for in the log file content.
- * @returns {Promise<Array<object | string>>} A promise that resolves to an array of matched log entries.
+ * @returns {Promise<Array<object | string>>}
  */
 export async function readLogFile(
   filePath: string,

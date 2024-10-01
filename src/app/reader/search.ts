@@ -32,6 +32,7 @@ export function getLastLine(text: string): [string, string] {
 
 /**
  * Returns an array of strings pulled from the input text by searching each line.
+ * This method steps through each line as a chunk of buffered text.
  *
  * @param {string} text - The text to search through, filtered if keywords are provided.
  * @param {number} needed - The maximum number of results expected.
@@ -56,9 +57,10 @@ export function searchByText(text: string, needed: number, keywords: string[] = 
 
 /**
  * Returns an array of strings pulled from the input text by searching each line.
+ * This method is faster than searchByText, but it requires more memory.
  *
- * @param {string} text - The text to search through. Each line will be checked.
- * @param {number} needed - The maximum number of results expect.
+ * @param {string} text - The text to search through.
+ * @param {number} needed - The maximum number of results expected.
  * @param {string[]} [keywords=[]] - An optional array of keywords to filter the results.
  * @returns {string[]} An array of strings containing log lines, filtered if keywords are provided.
  */
