@@ -6,6 +6,7 @@ services:
       - "3000:3000"
     volumes:
       - .:/app
+      - ./src/app/reader/__test__/fixtures:/var/log
     environment:
       - NODE_ENV=development
       - PORT=3000
