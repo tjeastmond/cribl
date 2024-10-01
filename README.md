@@ -4,11 +4,11 @@
 
 > Thank you for taking the time to review this project. I am excited to share my work with you and look forward to your feedback!
 
-This is an implementation of the Cribl team's API assessment project. This repo contains a simple API service for reading log files from the `/var/log` directory and returning the data in JSON format (when it works, otherwise an array or log lines). The service is built using Node.js, Express, and library free TypeScript for the reading and parsing of log files.
+This is an implementation of the Cribl team's API assessment project. This repo contains a simple API service for reading log files from the `/var/log` directory and returning the data parsed for use. The service is built using Node.js, Express, and library free TypeScript for the reading and parsing of log files.
 
-## A Few Notes
+## Notes
 
-Starting with some simple notes about the project:
+A few points about the project:
 
 - I built the reader and parser working with log files containing content in formats similar to Apache status logs and Cloudwatch JSON logs.
 - If the simple log format checks fail, the service will return an array of log lines.
@@ -19,7 +19,7 @@ Starting with some simple notes about the project:
 **What I Want to Add**
 
 - I was planning on implementing `gRPC` for the service to communicate with other servers hosting this service
-- I'm want to add paging, but I'd want to add caching as well to make it more efficient
+- I want to add paging, but I'd want to add caching as well to make it more efficient
 
 ## Technologies and Libraries
 
@@ -34,6 +34,7 @@ And uses the following technologies across the project:
 
 - TypeScript
 - Node.js
+- Jest
 - Docker
 
 ### Code Decisions
@@ -42,17 +43,17 @@ And uses the following technologies across the project:
 
 This project reads logs via file streams, and approaches pulling data from the files in two different ways.
 
-Both approaches only read in a chunk of data at a time and steps through the buffer backwards looking for lines that satisfy filtering and the requqired number of results needed. We seek backwards to ensure that the newest lines are returned first. The function running this process opperates like a generator function, yielding and waiting for the next chunk of data to be requested.
+Both approaches only read in a chunk of data at a time and steps through the buffer backwards looking for lines that satisfy filtering and the requqired number of results needed. We seek backwards to ensure that the newest lines are returned first. The function running this process opperates like a generator, yielding and waiting for the next chunk of data to be requested.
 
-My first solution with take the buffer and splits it on new lines and steps through them backwards looking for viable log lines. It filters and only returns the number of results requested. This solution is more memory intensive, but is more readable and easier to follow.
+My first solution would take the buffer and split it on new lines and steps through them backwards looking for viable log lines. It filters and only returns the number of results requested. This solution is more memory intensive, but is more readable and easier to follow.
 
-The second solution that I kept in place is more memory efficient, but potentionally harder to follow. It leaves the buffer in tact, looks for the last new line character and then plucks out the last line from the buffer. Eventually the buffer will be empty and needs a new chunk of data, or not if we have all we need.
+The second solution that I kept in place is more memory efficient, but potentionally harder to follow. It leaves the buffer in tact, looks for the last new line character and then plucks out the last line. Eventually the buffer will empty and need a new chunk of data, unless we have all we need.
 
 I left a toggle in place to switch between both solutions if you are interested, and could be found in the `src/app/reader/search.ts` file.
 
 **Parsing Logs**
 
-I wanted to make sure that the logs get to the endpoint in a useable format. I wrote an abstract base class that both current parsers implement. The idea is to make it so additional parsers could be easily added and used in the future. I was also thinking the API caller could request a specific parser to be used, but I did not implement that feature yet.
+I wanted to make sure that the logs get to the endpoint in a useable format. I wrote an abstract base class that both current parsers implement. The idea is to make it so additional parsers could be easily added and used in the future. I was also thinking the API caller could request a specific parser to be used, but I haven't implement that feature yet.
 
 The parsers use simple logic to determine if they are the best solution for the log file. If no parser works, the log is returned as an array of log lines.
 
@@ -67,17 +68,19 @@ All the example `curl` calls at the end of this README have a valid token in the
 To get started with this project, you will need to have `Node.js v20.17.0` installed on your machine. I suggest using `NVM` to install the proper version of `Node.js`. Once you have cloned this repository run the following command to get started:
 
 ```bash
-# Install the project dependencies
 npm install
 ```
 
-For local development, there is an `npm` script that can copy the test log files to the `/var/log` directory. This is just a convient way to test the service locally. You don't need my logs!
+For local development, there is an `npm` script that will copy the test log files to the `/var/log` directory. This is just a convient way to test the service locally. You don't need my logs!
 
 Files in the `/var/log` directory are read and parsed by the service. To run the service, you can use the following command:
 
 ```bash
-# Start the service locally
 npm run dev
+
+# or
+
+npm start
 ```
 
 ## Getting Started with Docker
@@ -111,11 +114,11 @@ This endpoint requires a `POST` request with a bearer token, and the following p
 - **num_results:** optional, the number of results to return, defaults to 100
 - **keywords:** optional, an array of keywords to filter the results by, defaults to []
 
-Filtering the results by `keyword` is optional. If the `keyword` parameter is not provided, the service will return all the log lines up to the `num_results` limit. Filtering is also case insensitive, and matches any of the keywords provided (not strictly all).
+Filtering the results by `keywords` is optional. If the `keywords` parameter is not provided, the service will return all the log lines up to the `num_results` limit. Filtering is also case insensitive, and matches any of the keywords provided (not strictly all).
 
 ## Running Tests
 
-The project has a suite of tests that can be run using the following command:
+The project has a suite of tests that can be run using the following commands:
 
 ```bash
 # Run all the tests
@@ -127,7 +130,7 @@ npm run test:reader
 
 ## CURL Examples
 
-The following CURL examples can be used to interact with the service. I will also include my export from my API testing tool, [Yaak.app](https://yaak.app/).
+The following CURL examples can be used to interact with the service. I will also include my export from the API testing tool, [Yaak.app](https://yaak.app/).
 
 ### Simple Health Check
 
