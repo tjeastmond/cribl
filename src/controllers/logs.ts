@@ -1,9 +1,10 @@
-import { readLogFile, fileExists } from "@reader/main";
+import { LOGS_DIRECTORY } from "@config/logsConfig";
+import { fileExists, readLogFile } from "@reader/main";
 import { isNumber } from "@utils/check";
 import { Request, Response } from "express";
 
 function logsPath(fileName: string) {
-  return `/var/log/${fileName}`;
+  return `${LOGS_DIRECTORY}/${fileName}`;
 }
 
 /**
