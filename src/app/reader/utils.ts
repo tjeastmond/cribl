@@ -4,7 +4,7 @@ import path from "path";
 import { ValidParams } from "./types";
 
 export function logsPath(fileName: string) {
-  return `${LOGS_DIRECTORY}/${fileName}`;
+  return `${LOGS_DIRECTORY}/${path.normalize(fileName)}`;
 }
 
 export function isNumber(value: any): value is number {
@@ -13,9 +13,9 @@ export function isNumber(value: any): value is number {
 
 export function isValidFilePath(filePath: string) {
   const normalizedPath = path.normalize(filePath);
-  const absolutePath = path.resolve(normalizedPath);
+  const absolutePath = logsPath(normalizedPath);
 
-  if (normalizedPath.includes("..") || normalizedPath.includes("./")) {
+  if (filePath.includes("..") || filePath.includes("./")) {
     return false;
   }
 
@@ -42,7 +42,7 @@ export async function validateParams(
 ): Promise<ValidParams> {
   const fullPath = logsPath(filePath);
 
-  if (!isValidFilePath(fullPath) || !isNumber(numberRows)) {
+  if (!isValidFilePath(filePath) || !isNumber(numberRows)) {
     throw new Error("Invalid file path or number of rows");
   }
 

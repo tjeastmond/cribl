@@ -37,7 +37,7 @@ describe("logs utilities", () => {
     });
 
     it("should return false for paths outside the logs directory", () => {
-      const outsidePath = path.join(__dirname, "outsideDir/file.log");
+      const outsidePath = "../outsideDir/file.log";
       expect(isValidFilePath(outsidePath)).toBe(false);
     });
 
@@ -73,8 +73,6 @@ describe("logs utilities", () => {
     });
 
     it("should throw an error if file does not exist", async () => {
-      // (fs.promises.access as jest.Mock).mockResolvedValueOnce(undefined);
-      // (fs.promises.access as jest.Mock).mockRejectedValueOnce(new Error("File not found"));
       await expect(validateParams("nonExistingFile.log", 100)).rejects.toThrow(
         "File not found: nonExistingFile.log",
       );
