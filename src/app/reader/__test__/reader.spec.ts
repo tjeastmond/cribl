@@ -5,6 +5,7 @@ describe("readLogFile", () => {
   const emptyLog = "empty.log";
   const fakeLog = "fake.log";
   const tenLinesLog = "tenLines.log";
+  const randomLog = "random.log";
 
   it("should read the last lines from the log file", async () => {
     const result = await readLogFile(smallLog, 3);
@@ -30,6 +31,17 @@ describe("readLogFile", () => {
   it("should read the ten lines from the test file in the correct order", async () => {
     const result = await readLogFile(tenLinesLog, 10);
     expect(result).toHaveLength(10);
+  });
+
+  it("should match keywords in the log file content", async () => {
+    const keywords = ["borderland"];
+    const result = await readLogFile(randomLog, 10, keywords);
+    expect(result.length).toBeGreaterThan(0);
+    result.forEach((line) => {
+      expect(
+        keywords.some((keyword) => (line as string).toLowerCase().includes(keyword.toLowerCase())),
+      ).toBe(true);
+    });
   });
 
   it("should handle errors when opening the file", async () => {
