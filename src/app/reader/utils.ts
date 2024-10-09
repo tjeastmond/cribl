@@ -12,15 +12,7 @@ export function isNumber(value: any): value is number {
 }
 
 export function isValidFilePath(filePath: string) {
-  const normalizedPath = path.normalize(filePath);
-  const absolutePath = logsPath(normalizedPath);
-
   if (filePath.includes("..") || filePath.includes("./")) {
-    return false;
-  }
-
-  const baseDirectory = path.resolve(LOGS_DIRECTORY);
-  if (!absolutePath.startsWith(baseDirectory)) {
     return false;
   }
 
