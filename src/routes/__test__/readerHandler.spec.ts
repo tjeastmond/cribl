@@ -16,7 +16,6 @@ describe("readerHandler", () => {
 
   it("should return 400 if fileName is missing", async () => {
     const response = await request(app).post("/read-log").send({});
-
     expect(response.status).toBe(400);
     expect(response.body.message).toBe("Missing a valid file name");
   });

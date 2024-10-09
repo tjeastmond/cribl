@@ -1,14 +1,21 @@
 {
   "name": "cribl-api-log-api",
   "version": "0.1.0",
-  "description": "",
-  "author": "TJ Eastmond <tj.eastmond@gmail.com>",
+  "description": "A basic log reader API",
+  "author": {
+    "name": "TJ Eastmond",
+    "email": "tj.eastmond@gmail.com",
+    "url": "https://tjeastmond.com"
+  },
   "scripts": {
     "start": "npm run dev",
     "dev": "nodemon --exec ts-node -r tsconfig-paths/register src/main.ts",
     "copy:logs": "sudo cp ./src/app/reader/__test__/fixtures/* /var/log",
     "test": "jest",
+    "test:watch": "jest --watch",
     "test:reader": "jest -- src/app/reader",
+    "test:reader:watch": "jest --watch src/app/reader",
+    "test:routes": "jest -- src/routes",
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
