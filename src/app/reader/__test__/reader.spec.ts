@@ -1,11 +1,10 @@
-import path from "path";
-import { readLogFile, fileExists } from "@reader/main";
+import { readLogFile } from "@reader/main";
 
 describe("readLogFile", () => {
-  const smallLog = path.join(__dirname, "/fixtures/small.log");
-  const emptyLog = path.join(__dirname, "/fixtures/empty.log");
-  const fakeLog = path.join(__dirname, "/fixtures/fake.log");
-  const tenLinesLog = path.join(__dirname, "/fixtures/tenLines.log");
+  const smallLog = "small.log";
+  const emptyLog = "empty.log";
+  const fakeLog = "fake.log";
+  const tenLinesLog = "tenLines.log";
 
   it("should read the last lines from the log file", async () => {
     const result = await readLogFile(smallLog, 3);
@@ -29,14 +28,8 @@ describe("readLogFile", () => {
   });
 
   it("should read the ten lines from the test file in the correct order", async () => {
-    const restult = await readLogFile(tenLinesLog, 10);
-    expect(restult).toHaveLength(10);
-  });
-
-  test("returns true for an existing file", async () => {
-    const existingFilePath = path.join(__dirname, "/fixtures/1000_apache.log");
-    const result = await fileExists(existingFilePath);
-    expect(result).toBe(true);
+    const result = await readLogFile(tenLinesLog, 10);
+    expect(result).toHaveLength(10);
   });
 
   it("should handle errors when opening the file", async () => {

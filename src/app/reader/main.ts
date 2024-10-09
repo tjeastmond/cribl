@@ -1,7 +1,7 @@
 import { parse } from "@reader/parse";
 import { searchBy } from "@reader/search";
+import { validateParams } from "@reader/utils";
 import * as fs from "fs";
-import path from "path";
 
 /**
  * Reads data from a file and writes it to a buffer at a specified offset.
@@ -70,15 +70,6 @@ async function readFileReverse(filePath: string): Promise<{ read: Function; done
   return { read, done };
 }
 
-export async function fileExists(filePath: string) {
-  try {
-    await fs.promises.access(filePath, fs.constants.R_OK);
-    return true;
-  } catch (error) {
-    throw new Error(`File not found: ${path.basename(filePath)}`);
-  }
-}
-
 /**
  * Reads a log file in reverse order, retrieving a specified number of lines
  * and matching any keywords.
@@ -93,9 +84,9 @@ export async function readLogFile(
   needs: number = 100,
   keywords: string[] = [],
 ): Promise<Array<object | string>> {
-  await fileExists(filePath);
-  const reader = await readFileReverse(filePath);
-  const count = needs || 100;
+  const valid = await validateParams(filePath, needs);
+  const reader = await readFileReverse(valid.path);
+  const count = valid.numberRows;
   const rows: Array<object | string> = [];
 
   while (!reader.done() && rows.length < count) {

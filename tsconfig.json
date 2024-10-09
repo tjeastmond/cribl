@@ -22,8 +22,7 @@
       "@services/*": ["./src/services/*"],
       "@controllers/*": ["./src/controllers/*"],
       "@middleware/*": ["./src/middleware/*"],
-      "@reader/*": ["./src/app/reader/*"],
-      "@utils/*": ["./src/app/utils/*"]
+      "@reader/*": ["./src/app/reader/*"]
     }
   }
 }
