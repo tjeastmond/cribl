@@ -1,0 +1,10 @@
+[
+  {
+    "label": "Run Tests",
+    "command": "npm test"
+  },
+  {
+    "label": "Run Tests Watch",
+    "command": "npm run test:watch"
+  }
+]
