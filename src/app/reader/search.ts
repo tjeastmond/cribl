@@ -8,19 +8,19 @@ const DEFAULT_SEARCHBY: SearchByType = "text";
 /**
  * Checks if any keyword exists within a given string, ignoring case.
  *
- * @param {string} line - The string to be checked for keywords.
- * @param {string[]} keywords - An array of keywords to search for within the line.
- * @returns {boolean} Returns true if any keyword is found in the line; otherwise, false.
+ * @param line - String to check for keywords.
+ * @param keywords - Keywords to search for.
+ * @returns True if any keyword is found, otherwise false.
  */
 export function checkString(line: string, keywords: string[]): boolean {
   return keywords.some((keyword) => line.toLowerCase().includes(keyword.toLowerCase()));
 }
 
 /**
- * Extracts the last line from a given text and returns it along with the remaining text.
+ * Extracts the last line from the text and returns it with the remaining text.
  *
- * @param {string} text - The input text to be processed.
- * @returns {[string, string]} An array containing the last line of the input and the remaining text.
+ * @param text - Input text to process.
+ * @returns Last line and remaining text.
  */
 export function getLastLine(text: string): [string, string] {
   const trimmedText = text.trimEnd();
@@ -31,13 +31,12 @@ export function getLastLine(text: string): [string, string] {
 }
 
 /**
- * Returns an array of strings pulled from the input text by searching each line.
- * This method steps through each line as a chunk of buffered text.
+ * Searches through text line by line and returns matching results.
  *
- * @param {string} text - The text to search through, filtered if keywords are provided.
- * @param {number} needed - The maximum number of results expected.
- * @param {string[]} [keywords=[]] - An optional array of keywords to filter the results.
- * @returns {string[]} An array of strings containing log lines, filtered if keywords are provided.
+ * @param text - Text to search through.
+ * @param needed - Maximum number of results.
+ * @param keywords - Optional keywords to filter results.
+ * @returns Array of matching log lines.
  */
 export function searchByText(text: string, needed: number, keywords: string[] = []): string[] {
   const found: string[] = [];
@@ -56,13 +55,12 @@ export function searchByText(text: string, needed: number, keywords: string[] = 
 }
 
 /**
- * Returns an array of strings pulled from the input text by searching each line.
- * This method is faster than searchByText, but it requires more memory.
+ * Searches through text using an array of lines and returns matching results.
  *
- * @param {string} text - The text to search through.
- * @param {number} needed - The maximum number of results expected.
- * @param {string[]} [keywords=[]] - An optional array of keywords to filter the results.
- * @returns {string[]} An array of strings containing log lines, filtered if keywords are provided.
+ * @param text - Text to search through.
+ * @param needed - Maximum number of results.
+ * @param keywords - Optional keywords to filter results.
+ * @returns Array of matching log lines.
  */
 export function searchByArray(text: string, needed: number, keywords: string[] = []): string[] {
   const found: string[] = [];
@@ -79,15 +77,13 @@ export function searchByArray(text: string, needed: number, keywords: string[] =
 }
 
 /**
- * Returns an array of strings pulled from log texts, and may by filtered by keywords.
+ * Searches through log text and returns matching results.
  *
- * @param {string} text - The text to search within.
- * @param {number} needed - The maximum number of results to return.
- * @param {string[]} [keywords=[]] - An array of keywords to filter the results.
- * @param {SearchByType} [searchByValue=DEFAULT_SEARCHBY] - The method to use for log searching.
- *                                                          Can be either "array" to search by lines
- *                                                          or "text" to search using line extraction.
- * @returns {string[]} An array of strings containing log lines, filtered if keywords are provided.
+ * @param text - Text to search.
+ * @param needed - Maximum number of results.
+ * @param keywords - Keywords to filter results.
+ * @param searchByValue - Method to use: "array" or "text".
+ * @returns Array of matching log lines.
  */
 export function searchBy(
   text: string,

@@ -2,19 +2,21 @@ import { ApacheParser } from "@reader/parsers/apacheParser";
 import { JSONParser } from "@reader/parsers/jsonParser";
 
 /**
- * Parses an array of log lines and returns the parsed result based on the log format.
+ * Parses an array of log lines based on the log format.
  *
- * @param {string[]} logLines - An array of log lines to be parsed.
- * @returns {Array<object | string>} An array of parsed log records or the original log lines as strings.
+ * @param logLines - Log lines to parse.
+ * @returns Parsed log records or original log lines.
  */
-export function parse(logLines: string[]): Array<object | string> {
-  if (!logLines.length) return [];
+export function parse(logLines: string[]): Array<Record<string, any> | string> {
+  if (logLines.length === 0) return [];
 
-  const jsonParser = new JSONParser(logLines);
-  const apacheParser = new ApacheParser(logLines);
+  const parsers = [new JSONParser(logLines), new ApacheParser(logLines)];
 
-  if (jsonParser.checkFirst()) return jsonParser.parse();
-  if (apacheParser.checkFirst()) return apacheParser.parse();
+  for (const parser of parsers) {
+    if (parser.checkFirst()) {
+      return parser.parse();
+    }
+  }
 
   return logLines;
 }
