@@ -3,27 +3,23 @@ import * as fs from "fs";
 import path from "path";
 import { ValidParams } from "./types";
 
-export function logsPath(fileName: string) {
-  return `${LOGS_DIRECTORY}/${path.normalize(fileName)}`;
+export function logsPath(fileName: string): string {
+  return path.join(LOGS_DIRECTORY, path.normalize(fileName));
 }
 
-export function isNumber(value: any): value is number {
+export function isNumber(value: unknown): value is number {
   return typeof value === "number" && !isNaN(value);
 }
 
-export function isValidFilePath(filePath: string) {
-  if (filePath.includes("..") || filePath.includes("./")) {
-    return false;
-  }
-
-  return true;
+export function isValidFilePath(filePath: string): boolean {
+  return !filePath.includes("..") && !filePath.includes("./");
 }
 
-export async function fileExists(filePath: string) {
+export async function fileExists(filePath: string): Promise<boolean> {
   try {
     await fs.promises.access(filePath, fs.constants.R_OK);
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
@@ -34,8 +30,12 @@ export async function validateParams(
 ): Promise<ValidParams> {
   const fullPath = logsPath(filePath);
 
-  if (!isValidFilePath(filePath) || !isNumber(numberRows)) {
-    throw new Error("Invalid file path or number of rows");
+  if (!isValidFilePath(filePath)) {
+    throw new Error("Invalid file path");
+  }
+
+  if (!isNumber(numberRows)) {
+    throw new Error("Invalid number of rows");
   }
 
   if (!(await fileExists(fullPath))) {

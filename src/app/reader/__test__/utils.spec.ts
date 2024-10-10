@@ -61,15 +61,11 @@ describe("logs utilities", () => {
 
   describe("validateParams", () => {
     it("should throw an error if file path is invalid", async () => {
-      await expect(validateParams("../invalidPath.log", 100)).rejects.toThrow(
-        "Invalid file path or number of rows",
-      );
+      await expect(validateParams("../invalidPath.log", 100)).rejects.toThrow("Invalid file path");
     });
 
     it("should throw an error if numberRows is not a number", async () => {
-      await expect(validateParams("10_apache.log", NaN)).rejects.toThrow(
-        "Invalid file path or number of rows",
-      );
+      await expect(validateParams("10_apache.log", NaN)).rejects.toThrow("Invalid number of rows");
     });
 
     it("should throw an error if file does not exist", async () => {
